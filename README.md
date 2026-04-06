@@ -216,7 +216,7 @@ Interactive API documentation is available using Swagger UI.
 
 After starting the server, access:
 
-http://localhost:3000/api-docs
+https://finance-dashboard-backend-4qiu.onrender.com/api-docs/
 
 Features:
 - View all API endpoints
