@@ -15,6 +15,8 @@ The system is designed with clean architecture principles and focuses on scalabi
 * **PostgreSQL** – Relational database
 * **Prisma ORM** – Database interaction
 * **Joi** – Request validation
+* **JWT (jsonwebtoken)** – Authentication
+* **Jest + Supertest** – Integration testing
 
 ---
 
@@ -29,11 +31,25 @@ Route → Controller → Service → Repository → Database
 * **Controller** → Handles HTTP requests
 * **Service** → Business logic
 * **Repository** → Database queries
-* **Middleware** → RBAC & error handling
+* **Middleware** → Authentication, RBAC & error handling
 
 ---
 
-## 🔐 Role-Based Access Control (RBAC)
+## 🔐 Authentication & Authorization
+
+### 🔑 Authentication
+
+* Implemented using **JWT (JSON Web Tokens)**
+* Users register and login to receive a token
+* Token must be sent in request headers:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+### 🔐 Role-Based Access Control (RBAC)
 
 Roles supported:
 
@@ -41,23 +57,85 @@ Roles supported:
 * **ANALYST** → Create & update records
 * **VIEWER** → Read-only access
 
-RBAC is implemented via middleware using request headers:
-
-```
-x-user-role: ADMIN | ANALYST | VIEWER
-```
+RBAC is enforced using middleware based on the role extracted from the JWT token.
 
 ---
 
 ## 📦 API Endpoints
 
+---
+
+### 🔐 Auth APIs
+
+#### Register
+
+```
+POST /api/auth/register
+```
+
+**Body:**
+
+```json
+{
+  "name": "Abhinav",
+  "email": "abhinav@example.com",
+  "password": "123456",
+  "role": "ADMIN"
+}
+```
+
+---
+
+#### Login
+
+```
+POST /api/auth/login
+```
+
+**Body:**
+
+```json
+{
+  "email": "abhinav@example.com",
+  "password": "123456"
+}
+```
+
+**Response:**
+
+```json
+{
+  "token": "jwt_token_here"
+}
+```
+
+---
+
 ### 👤 User APIs
 
-#### Create User
+#### Create User (ADMIN only)
 
 ```
 POST /api/users
 ```
+
+**Headers:**
+
+```
+Authorization: Bearer <token>
+```
+
+**Body:**
+
+```json
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "role": "VIEWER"
+}
+```
+
+---
 
 #### Get Users
 
@@ -75,12 +153,28 @@ GET /api/users
 POST /api/records
 ```
 
-#### Get Records (with filters + pagination)
+**Body:**
+
+```json
+{
+  "amount": 5000,
+  "type": "INCOME",
+  "category": "Salary",
+  "date": "2026-04-03T00:00:00.000Z",
+  "userId": "user_id"
+}
+```
+
+---
+
+#### Get Records (Filtering + Search + Pagination)
 
 ```
-GET /api/records?type=INCOME&page=1&limit=10
+GET /api/records?search=salary&type=INCOME&page=1&limit=10
 GET /api/records?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
 ```
+
+---
 
 #### Update Record
 
@@ -88,7 +182,9 @@ GET /api/records?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
 PUT /api/records/:id
 ```
 
-#### Delete Record
+---
+
+#### Delete Record (Soft Delete)
 
 ```
 DELETE /api/records/:id
@@ -104,7 +200,7 @@ DELETE /api/records/:id
 GET /api/dashboard
 ```
 
-Returns:
+**Response includes:**
 
 * Total income
 * Total expense
@@ -114,16 +210,34 @@ Returns:
 
 ---
 
+## 📚 API Documentation (Swagger)
+
+Interactive API documentation is available using Swagger UI.
+
+After starting the server, access:
+
+http://localhost:3000/api-docs
+
+Features:
+- View all API endpoints
+- Test APIs directly from browser
+- Supports authentication via Bearer token
+
 ## ✅ Features Implemented
 
-* User management with roles
+* JWT-based authentication
+* Role-based access control (RBAC)
 * Financial records CRUD operations
 * Filtering (type, category, date)
+* Search functionality
 * Pagination support
+* Soft delete implementation
 * Dashboard aggregation API
-* Role-based access control (RBAC)
+* Rate limiting for API protection
 * Request validation using Joi
 * Global error handling
+* Integration testing using Jest & Supertest
+* Interactive API documentation using Swagger
 
 ---
 
@@ -136,11 +250,15 @@ git clone <your-repo-link>
 cd finance-dashboard-backend
 ```
 
+---
+
 ### 2. Install dependencies
 
 ```
 npm install
 ```
+
+---
 
 ### 3. Configure environment variables
 
@@ -148,13 +266,18 @@ Create a `.env` file:
 
 ```
 DATABASE_URL="postgresql://postgres:password@localhost:5432/finance_db"
+JWT_SECRET="your_secret_key"
 ```
+
+---
 
 ### 4. Run database migrations
 
 ```
 npx prisma migrate dev
 ```
+
+---
 
 ### 5. Start the server
 
@@ -164,48 +287,54 @@ npm run dev
 
 ---
 
+### 6. Access API documentation
+Open in browser:
+http://localhost:3000/api-docs
+
 ## 🧪 Testing
 
-APIs can be tested using:
+Integration tests are implemented using **Jest** and **Supertest**.
 
-* Thunder Client (VS Code)
-* Postman
-
-Make sure to include header:
+Run tests using:
 
 ```
-x-user-role: ADMIN
+npm test
 ```
 
 ---
 
 ## ⚠️ Assumptions
 
-* Authentication is not implemented; role is passed via headers
-* Single database instance assumed
-* No soft delete implemented (hard delete used)
+* Authentication is handled using JWT tokens
+* Role is extracted from token instead of headers
+* Soft delete is used instead of permanent deletion
+* System is designed for a single service environment
 
 ---
 
 ## 🚀 Future Improvements
 
-* JWT-based authentication
-* Soft delete support
-* Advanced analytics (monthly trends)
 * API documentation using Swagger
+* Advanced analytics (monthly trends)
+* Refresh token mechanism
+* Multi-user tenancy support
 
 ---
 
 ## 💡 Key Highlights
 
 * Clean layered architecture
+* Secure JWT-based authentication
 * Strong RBAC implementation
-* Real-world API design (pagination, filtering)
-* Aggregation-based dashboard
-* Production-level validation & error handling
+* Real-world API design (pagination, filtering, search)
+* Data safety using soft delete
+* Rate limiting for API protection
+* Integration testing for reliability
+* Swagger based API documentation for easy testing and integration
 
 ---
 
 ## 👨‍💻 Author
 
-Abhinav Tomar
+**Abhinav Tomar**
+
