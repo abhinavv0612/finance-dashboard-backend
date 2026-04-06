@@ -314,7 +314,6 @@ npm test
 
 ## 🚀 Future Improvements
 
-* API documentation using Swagger
 * Advanced analytics (monthly trends)
 * Refresh token mechanism
 * Multi-user tenancy support
