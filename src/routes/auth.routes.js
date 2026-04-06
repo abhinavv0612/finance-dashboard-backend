@@ -20,9 +20,10 @@
  *                 type: string
  *               role:
  *                 type: string
+ *                 example: ADMIN
  *     responses:
  *       201:
- *         description: User created
+ *         description: User registered successfully
  */
 
 /**
@@ -31,6 +32,21 @@
  *   post:
  *     summary: Login user
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
  */
 
 import express from "express";

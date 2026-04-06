@@ -1,3 +1,18 @@
+/**
+ * @swagger
+ * /api/dashboard:
+ *   get:
+ *     summary: Get dashboard summary
+ *     tags: [Dashboard]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dashboard data
+ */
+
+
+
 import express from "express";
 import { getDashboard } from "../controllers/dashboard.controller.js";
 import { authorizeRoles } from "../middlewares/rbac.middleware.js";

@@ -2,6 +2,15 @@ import swaggerJsdoc from "swagger-jsdoc";
 
 const options = {
   definition: {
+    components: {
+  securitySchemes: {
+    bearerAuth: {
+      type: "http",
+      scheme: "bearer",
+      bearerFormat: "JWT",
+    },
+  },
+},
     openapi: "3.0.0",
     info: {
       title: "Financial Data Management API",

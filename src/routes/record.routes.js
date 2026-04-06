@@ -1,25 +1,110 @@
 /**
  * @swagger
  * /api/records:
- *   get:
- *     summary: Get financial records
+ *   post:
+ *     summary: Create financial record
  *     tags: [Records]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [amount, type, category, userId]
+ *             properties:
+ *               amount:
+ *                 type: number
+ *               type:
+ *                 type: string
+ *                 example: INCOME
+ *               category:
+ *                 type: string
+ *               date:
+ *                 type: string
+ *                 format: date-time
+ *               userId:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Record created successfully
  */
 
 /**
  * @swagger
  * /api/records:
- *   post:
- *     summary: Create financial record
+ *   get:
+ *     summary: Get financial records
  *     tags: [Records]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Records fetched
  */
 
 /**
  * @swagger
- * /api/dashboard:
- *   get:
- *     summary: Get dashboard summary
- *     tags: [Dashboard]
+ * /api/records/{id}:
+ *   put:
+ *     summary: Update record
+ *     tags: [Records]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Record updated
+ */
+
+/**
+ * @swagger
+ * /api/records/{id}:
+ *   delete:
+ *     summary: Delete record (soft delete)
+ *     tags: [Records]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Record deleted
  */
 
 
