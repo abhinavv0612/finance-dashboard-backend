@@ -289,7 +289,11 @@ npm run dev
 
 ### 6. Access API documentation
 Open in browser:
-http://localhost:3000/api-docs
+https://finance-dashboard-backend-4qiu.onrender.com/api-docs/
+## Notes
+- JWT authentication required for protected routes
+- Use /api/auth/login to get token
+- Hosted on Render (cold start ~30s)
 
 ## 🧪 Testing
 
