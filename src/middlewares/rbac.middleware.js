@@ -1,10 +1,10 @@
 export const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    const userRole = req.headers["x-user-role"];
+    const userRole = req.user?.role; 
 
     if (!userRole) {
       return res.status(401).json({
-        error: "No role provided",
+        error: "Unauthorized",
       });
     }
 

@@ -6,7 +6,10 @@ export const createRecord = async (data) => {
 
 export const getRecords = async (filters, pagination) => {
   return prisma.financialRecord.findMany({
-    where: filters,
+    where: {
+      ...filters,
+      isDeleted: false, 
+    },
     skip: pagination?.skip,
     take: pagination?.take,
     orderBy: {
@@ -23,7 +26,8 @@ export const updateRecord = async (id, data) => {
 };
 
 export const deleteRecord = async (id) => {
-  return prisma.financialRecord.delete({
+  return prisma.financialRecord.update({
     where: { id },
+    data: { isDeleted: true },
   });
 };

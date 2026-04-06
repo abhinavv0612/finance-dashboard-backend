@@ -23,14 +23,30 @@ export const createRecord = async (req, res) => {
 
 export const getRecords = async (req, res) => {
   try {
-    const { type, category, startDate, endDate, page = 1, limit = 10 } = req.query;
+    const {
+      type,
+      category,
+      search,
+      startDate,
+      endDate,
+      page = 1,
+      limit = 10,
+    } = req.query;
 
     const filters = {};
 
     if (type) filters.type = type;
+
+     // Search support
+    if (search) {
+      filters.OR = [
+        { category: { contains: search, mode: "insensitive" } },
+        { notes: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
     if (category) filters.category = category;
 
-    // 📅 Date filtering
     if (startDate && endDate) {
       filters.date = {
         gte: new Date(startDate),

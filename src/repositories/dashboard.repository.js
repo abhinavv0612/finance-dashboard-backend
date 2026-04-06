@@ -1,13 +1,15 @@
 import prisma from "../config/prisma.js";
 
 export const getDashboardData = async () => {
-  const records = await prisma.financialRecord.findMany();
+
+  const records = await prisma.financialRecord.findMany({
+  where: { isDeleted: false },
+  });
 
   const recentTransactions = await prisma.financialRecord.findMany({
-    orderBy: {
-      date: "desc",
-    },
-    take: 5,
+  where: { isDeleted: false },
+  orderBy: { date: "desc" },
+  take: 5,
   });
 
   let totalIncome = 0;

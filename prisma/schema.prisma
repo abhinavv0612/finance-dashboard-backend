@@ -22,10 +22,11 @@ model User {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
+  password String?
   role      Role
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
-
+ 
   records   FinancialRecord[]
 }
 
@@ -41,4 +42,7 @@ model FinancialRecord {
   user      User        @relation(fields: [userId], references: [id])
 
   createdAt DateTime    @default(now())
+
+  isDeleted Boolean @default(false)
 }
+
